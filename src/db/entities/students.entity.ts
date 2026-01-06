@@ -4,7 +4,7 @@ import { EnumGender } from '../../types/enum/app_enum';
 import { MarksEntity } from './marks.entity';
 import { StudentEnrollmentsEntity } from './student_enrollments.entity';
 
-@Entity()
+@Entity('students')
 export class StudentsEntity extends BaseEntity {
   @Column({ name: 'name', type: 'varchar' })
   name: string;

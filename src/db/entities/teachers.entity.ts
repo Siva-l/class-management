@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { ClassTeachersEntity } from './class_teachers.entity';
 
-@Entity()
+@Entity('teachers')
 export class TeachersEntity extends BaseEntity {
   @Column({ name: 'name', type: 'varchar' })
   name: string;
@@ -12,6 +12,9 @@ export class TeachersEntity extends BaseEntity {
 
   @Column({ name: 'phone', type: 'varchar', unique: true })
   phone: string;
+
+  @Column({ name: 'encrypted_password', type: 'varchar', nullable: true })
+  encryptedPassword?: string;
 
   @OneToMany(() => ClassTeachersEntity, (classTeacher) => classTeacher.teacher)
   classTeachers: ClassTeachersEntity[];

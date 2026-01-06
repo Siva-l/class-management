@@ -5,7 +5,7 @@ import { StudentsEntity } from './students.entity';
 import { SubjectsEntity } from './subjects.entity';
 import { ExamEntity } from './exams.entity';
 
-@Entity()
+@Entity('marks')
 export class MarksEntity extends BaseEntity {
   @Column({ name: 'exam_id', type: 'uuid' })
   examId: string;

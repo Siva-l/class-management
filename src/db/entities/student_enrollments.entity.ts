@@ -3,7 +3,7 @@ import { BaseEntity } from './base.entity';
 import { StudentsEntity } from './students.entity';
 import { DivisionsEntity } from './divisions.entity';
 
-@Entity()
+@Entity('student_enrollments')
 export class StudentEnrollmentsEntity extends BaseEntity {
   @Column({ name: 'student_id', type: 'uuid' })
   studentId: string;

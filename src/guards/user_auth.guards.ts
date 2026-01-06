@@ -56,11 +56,13 @@ export class UserAuthGuard implements CanActivate {
       secret: this.configService.get('JWT_SECRET'),
     });
 
-    const user = await this.userService.getUserById(tokenPayload['userId']);
+    //   const user = await this.userService.getUserById(tokenPayload['userId']);
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid token');
-    }
-    return user;
+    //   if (!user) {
+    //     throw new UnauthorizedException('Invalid token');
+    //   }
+    //   return user;
+    // }
+    return tokenPayload;
   }
 }

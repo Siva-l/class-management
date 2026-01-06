@@ -5,7 +5,7 @@ import { ClassTeachersEntity } from './class_teachers.entity';
 import { StudentsEntity } from './students.entity';
 import { StudentEnrollmentsEntity } from './student_enrollments.entity';
 
-@Entity()
+@Entity('divisions')
 export class DivisionsEntity extends BaseEntity {
   @Column({ name: 'name', type: 'varchar' })
   name: string;

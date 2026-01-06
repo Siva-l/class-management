@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { DivisionsEntity } from './divisions.entity';
 
-@Entity()
+@Entity('classes')
 export class ClassEntity extends BaseEntity {
   @Column({ name: 'grade', type: 'int' })
   grade: number;
