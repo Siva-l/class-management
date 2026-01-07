@@ -1,5 +1,11 @@
 import { EnumGender } from 'src/types/enum/app_enum';
-import { IsEnum, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsEnum,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateStudentDTO {
@@ -9,7 +15,7 @@ export class CreateStudentDTO {
 
   @IsString()
   @IsNotEmpty()
-  admissionNumber?: string;
+  admissionNo?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -26,3 +32,17 @@ export class CreateStudentDTO {
 }
 
 export class UpdateStudentDTO extends PartialType(CreateStudentDTO) {}
+
+export class GetStudentsQueryDTO {
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsIn(['name', 'admissionNumber', 'gender'])
+  sortBy?: 'name' | 'admissionNumber' | 'gender';
+
+  @IsOptional()
+  @IsIn(['ASC', 'DESC'])
+  sortOrder?: 'ASC' | 'DESC';
+}

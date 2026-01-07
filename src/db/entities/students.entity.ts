@@ -10,7 +10,7 @@ export class StudentsEntity extends BaseEntity {
   name: string;
 
   @Column({ name: 'admission_no', type: 'varchar', unique: true })
-  admission_no: string;
+  admissionNo: string;
 
   @Column({ name: 'dob', type: 'date' })
   dob: Date;
@@ -18,7 +18,7 @@ export class StudentsEntity extends BaseEntity {
   @Column({ name: 'gender', type: 'enum', enum: EnumGender })
   gender: EnumGender;
 
-  @Column({ name: 'phone', type: 'varchar', unique: true })
+  @Column({ name: 'phone', type: 'varchar' })
   phone: string;
 
   @OneToMany(() => MarksEntity, (marks) => marks.student)

@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import {
   IsEmail,
+  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -26,7 +27,20 @@ export class CreateTeacherDTO {
 
   @IsOptional()
   @Matches(passwordRegex, { message: passwordMessage })
-  password?: string;
+  password: string;
 }
 
 export class UpdateTeacherDTO extends PartialType(CreateTeacherDTO) {}
+
+export class GetTeachersQueryDTO {
+  @IsOptional()
+  @IsIn(['name'])
+  sortBy?: 'name';
+
+  @IsOptional()
+  @IsIn(['ASC', 'DESC'])
+  sortOrder?: 'ASC' | 'DESC';
+
+  @IsOptional()
+  search?: string;
+}

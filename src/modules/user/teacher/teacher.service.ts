@@ -2,7 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TeachersEntity } from 'src/db/entities/teachers.entity';
-import { CreateTeacherDTO, UpdateTeacherDTO } from '../dto/teacher.dto';
+import {
+  CreateTeacherDTO,
+  GetTeachersQueryDTO,
+  UpdateTeacherDTO,
+} from '../dto/teacher.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -16,8 +20,17 @@ export class TeacherService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async getAllTeachers(): Promise<TeachersEntity[]> {
-    return this.teachersRepository.find();
+  async getAllTeachers(query: GetTeachersQueryDTO): Promise<TeachersEntity[]> {
+    const qb = this.teachersRepository.createQueryBuilder('teacher');
+
+    if (query.search) {
+      qb.where('teacher.name ILIKE :search', {
+        search: `%${query.search}%`,
+      });
+    }
+    qb.orderBy(`teacher.${query.sortBy || 'name'}`, query.sortOrder || 'ASC');
+
+    return qb.getMany();
   }
 
   async getTeacherById(teacherId: string): Promise<TeachersEntity> {
@@ -30,7 +43,9 @@ export class TeacherService {
     return teacher;
   }
 
-  async createTeacher(payload: CreateTeacherDTO): Promise<TeachersEntity> {
+  async createTeacher(payload: CreateTeacherDTO): Promise<{
+    teacherInfo: Omit<TeachersEntity, 'encryptedPassword'>;
+  }> {
     const teacherExist = await this.teachersRepository.findOne({
       where: { phone: payload.phone },
     });
@@ -39,13 +54,17 @@ export class TeacherService {
       throw new BadRequestException('Teacher already exists');
     }
 
+    const saltRounds = this.configService.get<string>('SALT_ROUNDS', '12');
+    const encryptedPassword = await bcrypt.hash(payload.password, +saltRounds);
+
     const teacher = await this.teachersRepository.save({
       ...payload,
+      encryptedPassword,
     });
 
     const { encryptedPassword: _, password: __, ...teacherInfo } = teacher;
 
-    return teacherInfo;
+    return { teacherInfo };
   }
 
   async updateTeacher(

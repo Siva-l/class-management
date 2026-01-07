@@ -6,12 +6,13 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { TeacherService } from './teacher.service';
 import { ResponseTransformInterceptor } from 'src/injectors/response.injectors';
-import { CreateTeacherDTO } from '../dto/teacher.dto';
+import { CreateTeacherDTO, GetTeachersQueryDTO } from '../dto/teacher.dto';
 import { UserAuthGuard } from 'src/guards/user_auth.guards';
 
 @Controller('teachers')
@@ -21,8 +22,8 @@ export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 
   @Get()
-  async getAllTeachers() {
-    return this.teacherService.getAllTeachers();
+  async getAllTeachers(@Query() query: GetTeachersQueryDTO) {
+    return this.teacherService.getAllTeachers(query);
   }
 
   @Get(':teacherId')

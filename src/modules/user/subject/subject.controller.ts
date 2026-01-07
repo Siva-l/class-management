@@ -6,17 +6,28 @@ import {
   Param,
   Post,
   Put,
+  Query,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
-import { CreateSubjectDTO, UpdateSubjectDTO } from '../dto/subject.dto';
+import {
+  CreateSubjectDTO,
+  GetSubjectsQueryDTO,
+  UpdateSubjectDTO,
+} from '../dto/subject.dto';
+import { UserAuthGuard } from 'src/guards/user_auth.guards';
+import { ResponseTransformInterceptor } from 'src/injectors/response.injectors';
 
 @Controller('subjects')
+@UseGuards(UserAuthGuard)
+@UseInterceptors(ResponseTransformInterceptor)
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 
   @Get()
-  async getAllSubjects() {
-    return this.subjectService.getAllSubjects();
+  async getAllSubjects(@Query() query: GetSubjectsQueryDTO) {
+    return this.subjectService.getAllSubjects(query);
   }
 
   @Post('create-subject')

@@ -46,7 +46,6 @@ export class CreateStudentsTable1767352230404 implements MigrationInterface {
           {
             name: 'phone',
             type: 'varchar',
-            isUnique: true,
             isNullable: false,
           },
           {

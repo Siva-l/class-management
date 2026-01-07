@@ -2,7 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SubjectsEntity } from 'src/db/entities/subjects.entity';
-import { CreateSubjectDTO, UpdateSubjectDTO } from '../dto/subject.dto';
+import {
+  CreateSubjectDTO,
+  GetSubjectsQueryDTO,
+  UpdateSubjectDTO,
+} from '../dto/subject.dto';
 
 @Injectable()
 export class SubjectService {
@@ -11,8 +15,17 @@ export class SubjectService {
     private readonly subjectsRepository: Repository<SubjectsEntity>,
   ) {}
 
-  async getAllSubjects(): Promise<SubjectsEntity[]> {
-    return this.subjectsRepository.find();
+  async getAllSubjects(query: GetSubjectsQueryDTO): Promise<SubjectsEntity[]> {
+    const qb = this.subjectsRepository.createQueryBuilder('subject');
+
+    if (query.search) {
+      qb.andWhere('subject.name ILIKE :search', {
+        search: `%${query.search}%`,
+      });
+    }
+    qb.orderBy(`subject.${query.sortBy || 'name'}`, query.sortOrder || 'ASC');
+
+    return qb.getMany();
   }
 
   async createSubject(payload: CreateSubjectDTO): Promise<SubjectsEntity> {

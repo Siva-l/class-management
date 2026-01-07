@@ -1,26 +1,38 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateStudentDTO, UpdateStudentDTO } from '../dto/user.dto';
+import {
+  CreateStudentDTO,
+  GetStudentsQueryDTO,
+  UpdateStudentDTO,
+} from '../dto/student.dto';
 import { StudentsEntity } from 'src/db/entities/students.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EnumGender } from 'src/types/enum/app_enum';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class UsersService {
+export class StudentService {
   constructor(
     @InjectRepository(StudentsEntity)
     private readonly studentsRepository: Repository<StudentsEntity>,
-    private readonly jwtService: JwtService,
   ) {}
 
-  async getAllStudents(): Promise<StudentsEntity[]> {
-    return this.studentsRepository.find();
+  async getAllStudents(query: GetStudentsQueryDTO): Promise<StudentsEntity[]> {
+    const qb = this.studentsRepository.createQueryBuilder('student');
+    if (query.search) {
+      qb.where('student.name ILIKE :search', {
+        search: `%${query.search}%`,
+      });
+    }
+    qb.orderBy(
+      `student.${query.sortBy || 'admissionNo'}`,
+      query.sortOrder ?? 'ASC',
+    );
+    return qb.getMany();
   }
 
   async createStudent(payload: CreateStudentDTO): Promise<StudentsEntity> {
     const userExists = await this.studentsRepository.findOne({
-      where: { phone: payload.phone, admission_no: payload.admissionNumber },
+      where: { admissionNo: payload.admissionNo },
     });
 
     if (userExists) {
@@ -29,7 +41,7 @@ export class UsersService {
 
     const student = this.studentsRepository.save({
       name: payload.name,
-      admission_no: payload.admissionNumber,
+      admissionNo: payload.admissionNo,
       dob: payload.dob,
       gender: payload.gender as EnumGender,
       phone: payload.phone,
@@ -62,28 +74,12 @@ export class UsersService {
       throw new BadRequestException('Student not found');
     }
 
-    if (payload.phone || payload.admissionNumber) {
-      const existingStudent = await this.studentsRepository.findOne({
-        where: {
-          phone: payload.phone ?? student.phone,
-          admission_no: payload.admissionNumber ?? student.admission_no,
-        },
-      });
-
-      if (existingStudent && existingStudent.id !== studentId) {
-        throw new BadRequestException('Student already exists');
-      }
-    }
-
-    const updatedStudent = this.studentsRepository.merge(student, {
-      name: payload.name,
-      admission_no: payload.admissionNumber,
-      dob: payload.dob,
-      gender: payload.gender as EnumGender,
-      phone: payload.phone,
+    const updatedStudent = await this.studentsRepository.save({
+      ...student,
+      ...payload,
     });
 
-    return this.studentsRepository.save(updatedStudent);
+    return updatedStudent;
   }
 
   async deleteStudent(studentId: string): Promise<{ message: string }> {
