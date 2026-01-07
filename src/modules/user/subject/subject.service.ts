@@ -19,7 +19,7 @@ export class SubjectService {
     const qb = this.subjectsRepository.createQueryBuilder('subject');
 
     if (query.search) {
-      qb.andWhere('subject.name ILIKE :search', {
+      qb.where('subject.name ILIKE :search', {
         search: `%${query.search}%`,
       });
     }
