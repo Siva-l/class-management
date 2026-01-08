@@ -31,7 +31,7 @@ export class TeacherController {
     return this.teacherService.getTeacherById(teacherId);
   }
 
-  @Post('create-teacher')
+  @Post('/create')
   async createTeacher(@Body() payload: CreateTeacherDTO) {
     return this.teacherService.createTeacher(payload);
   }

@@ -24,7 +24,7 @@ export class TeacherService {
     const qb = this.teachersRepository.createQueryBuilder('teacher');
 
     if (query.search) {
-      qb.where('teacher.name ILIKE :search', {
+      qb.where('teacher.name ILIKE :search OR teacher.email ILIKE :search', {
         search: `%${query.search}%`,
       });
     }
@@ -46,7 +46,7 @@ export class TeacherService {
   async createTeacher(payload: CreateTeacherDTO): Promise<{
     teacherInfo: Omit<TeachersEntity, 'encryptedPassword'>;
   }> {
-    const teacherExist = await this.teachersRepository.findOne({
+    const teacherExist = await this.teachersRepository.exists({
       where: { phone: payload.phone },
     });
 

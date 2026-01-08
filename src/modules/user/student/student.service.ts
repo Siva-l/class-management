@@ -31,7 +31,7 @@ export class StudentService {
   }
 
   async createStudent(payload: CreateStudentDTO): Promise<StudentsEntity> {
-    const userExists = await this.studentsRepository.findOne({
+    const userExists = await this.studentsRepository.exists({
       where: { admissionNo: payload.admissionNo },
     });
 

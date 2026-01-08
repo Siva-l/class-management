@@ -11,24 +11,24 @@ import { PartialType } from '@nestjs/mapped-types';
 export class CreateStudentDTO {
   @IsString()
   @IsNotEmpty()
-  name?: string;
+  name: string;
 
   @IsString()
   @IsNotEmpty()
-  admissionNo?: string;
+  admissionNo: string;
 
   @IsString()
   @IsNotEmpty()
-  dob?: string;
+  dob: string;
 
   @IsString()
   @IsEnum(EnumGender)
   @IsNotEmpty()
-  gender?: EnumGender;
+  gender: EnumGender;
 
   @IsString()
   @IsNotEmpty()
-  phone?: string;
+  phone: string;
 }
 
 export class UpdateStudentDTO extends PartialType(CreateStudentDTO) {}

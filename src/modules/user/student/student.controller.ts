@@ -30,7 +30,7 @@ export class StudentController {
     return this.studentService.getAllStudents(query);
   }
 
-  @Post('create-student')
+  @Post('/create')
   async createStudent(@Body() payload: CreateStudentDTO) {
     return this.studentService.createStudent(payload);
   }

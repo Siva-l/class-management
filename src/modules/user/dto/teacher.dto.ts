@@ -15,16 +15,17 @@ const passwordMessage =
 export class CreateTeacherDTO {
   @IsString()
   @IsOptional()
-  name?: string;
+  name: string;
 
   @IsString()
   @IsOptional()
-  phone?: string;
+  phone: string;
 
   @IsEmail()
   @IsOptional()
-  email?: string;
+  email: string;
 
+  @IsString()
   @IsOptional()
   @Matches(passwordRegex, { message: passwordMessage })
   password: string;
@@ -41,6 +42,7 @@ export class GetTeachersQueryDTO {
   @IsIn(['ASC', 'DESC'])
   sortOrder?: 'ASC' | 'DESC';
 
+  @IsString()
   @IsOptional()
   search?: string;
 }

@@ -29,12 +29,14 @@ export class SubjectService {
   }
 
   async createSubject(payload: CreateSubjectDTO): Promise<SubjectsEntity> {
-    const subjectExist = await this.subjectsRepository.findOne({
-      where: { name: payload.name },
+    const subjectExist = await this.subjectsRepository.exists({
+      where: [{ name: payload.name }, { code: payload.code }],
     });
 
     if (subjectExist) {
-      throw new BadRequestException('Subject already exists');
+      throw new BadRequestException(
+        `${payload.name} already exists with code ${payload.code}`,
+      );
     }
 
     const subject = await this.subjectsRepository.save({

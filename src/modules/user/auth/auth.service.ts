@@ -37,7 +37,7 @@ export class AuthService {
     }
 
     const payload = {
-      userId: teacher.id,
+      teacherId: teacher.id,
       email: teacher.email,
     };
 
@@ -45,11 +45,11 @@ export class AuthService {
 
     return {
       accessToken,
-      user: {
-        id: teacher.id,
+      teacher: {
+        teacherId: teacher.id,
         name: teacher.name,
         email: teacher.email,
-        userExists: true,
+        phone: teacher.phone,
       },
     };
   }

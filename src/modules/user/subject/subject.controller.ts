@@ -30,7 +30,7 @@ export class SubjectController {
     return this.subjectService.getAllSubjects(query);
   }
 
-  @Post('create-subject')
+  @Post('/create')
   async createSubject(@Body() payload: CreateSubjectDTO) {
     return this.subjectService.createSubject(payload);
   }

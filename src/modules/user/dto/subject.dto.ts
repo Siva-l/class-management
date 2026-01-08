@@ -1,11 +1,13 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsIn, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateSubjectDTO {
   @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsString()
+  @IsNotEmpty()
   code: string;
 }
 
@@ -20,6 +22,7 @@ export class GetSubjectsQueryDTO {
   @IsIn(['ASC', 'DESC'])
   sortOrder?: 'ASC' | 'DESC';
 
+  @IsString()
   @IsOptional()
   search?: string;
 }
