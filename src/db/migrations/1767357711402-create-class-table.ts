@@ -16,6 +16,7 @@ export class CreateClassTable1767357711402 implements MigrationInterface {
           {
             name: 'grade',
             type: 'int',
+            isUnique: true,
             isNullable: false,
           },
           {

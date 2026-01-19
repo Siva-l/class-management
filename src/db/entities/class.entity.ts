@@ -4,7 +4,7 @@ import { DivisionsEntity } from './divisions.entity';
 
 @Entity('class')
 export class ClassEntity extends BaseEntity {
-  @Column({ name: 'grade', type: 'int' })
+  @Column({ name: 'grade', type: 'int', unique: true })
   grade: number;
 
   @Column({ name: 'description', type: 'varchar', nullable: true })

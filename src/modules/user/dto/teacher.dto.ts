@@ -14,20 +14,20 @@ const passwordMessage =
 
 export class CreateTeacherDTO {
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   name: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   phone: string;
 
   @IsEmail()
-  @IsOptional()
+  @IsNotEmpty()
   email: string;
 
   @IsString()
-  @IsOptional()
   @Matches(passwordRegex, { message: passwordMessage })
+  @IsNotEmpty()
   password: string;
 }
 

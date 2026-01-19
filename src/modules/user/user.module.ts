@@ -3,9 +3,20 @@ import { TeacherModule } from './teacher/teacher.module';
 import { AuthModule } from './auth/auth.module';
 import { SubjectModule } from './subject/subject.module';
 import { StudentModule } from './student/student.module';
+import { ClassModule } from './class/class.module';
+import { DivisionModule } from './division/division.module';
+import { ClassTeacherModule } from './class_teacher/class_teacher.module';
 
 @Module({
-  imports: [StudentModule, TeacherModule, AuthModule, SubjectModule],
+  imports: [
+    StudentModule,
+    TeacherModule,
+    AuthModule,
+    SubjectModule,
+    ClassModule,
+    DivisionModule,
+    ClassTeacherModule,
+  ],
   controllers: [],
   providers: [],
 })
