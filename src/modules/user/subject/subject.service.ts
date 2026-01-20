@@ -23,6 +23,7 @@ export class SubjectService {
         search: `%${query.search}%`,
       });
     }
+
     qb.orderBy(`subject.${query.sortBy || 'name'}`, query.sortOrder || 'ASC');
 
     return qb.getMany();
@@ -54,6 +55,7 @@ export class SubjectService {
     const subject = await this.subjectsRepository.findOne({
       where: { id: subjectId },
     });
+
     if (!subject) {
       throw new BadRequestException('Subject not found');
     }
@@ -67,9 +69,11 @@ export class SubjectService {
     const subject = await this.subjectsRepository.findOne({
       where: { id: subjectId },
     });
+
     if (!subject) {
       throw new BadRequestException('Subject not found');
     }
+
     return subject;
   }
 
@@ -77,10 +81,13 @@ export class SubjectService {
     const subject = await this.subjectsRepository.findOne({
       where: { id: subjectId },
     });
+
     if (!subject) {
       throw new BadRequestException('Subject not found');
     }
+
     await this.subjectsRepository.delete({ id: subjectId });
+
     return { message: 'Subject deleted successfully.' };
   }
 }

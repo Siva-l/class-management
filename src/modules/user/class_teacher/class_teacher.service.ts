@@ -17,11 +17,6 @@ export class ClassTeacherService {
 
   async getAllClassTeachers(query: GetClassTeachersQueryDTO) {
     const qb = this.classTeacherRepository.createQueryBuilder('classTeacher');
-    if (query.search) {
-      qb.where('classTeacher.divisionId ILIKE :search', {
-        search: `%${query.search}%`,
-      });
-    }
 
     qb.orderBy(
       `classTeacher.${query.sortBy || 'divisionId'}`,

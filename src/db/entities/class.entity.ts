@@ -8,7 +8,7 @@ export class ClassEntity extends BaseEntity {
   grade: number;
 
   @Column({ name: 'description', type: 'varchar', nullable: true })
-  description: string;
+  description?: string;
 
   @OneToMany(() => DivisionsEntity, (division) => division.class)
   divisions: DivisionsEntity[];

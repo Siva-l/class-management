@@ -21,8 +21,4 @@ export class GetClassTeachersQueryDTO {
   @IsOptional()
   @IsIn(['ASC', 'DESC'])
   sortOrder?: 'ASC' | 'DESC';
-
-  @IsString()
-  @IsOptional()
-  search?: string;
 }

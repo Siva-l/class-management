@@ -28,6 +28,7 @@ export class TeacherService {
         search: `%${query.search}%`,
       });
     }
+
     qb.orderBy(`teacher.${query.sortBy || 'name'}`, query.sortOrder || 'ASC');
 
     return qb.getMany();
@@ -37,9 +38,11 @@ export class TeacherService {
     const teacher = await this.teachersRepository.findOne({
       where: { id: teacherId },
     });
+
     if (!teacher) {
       throw new BadRequestException('Teacher not found');
     }
+
     return teacher;
   }
 
@@ -74,6 +77,7 @@ export class TeacherService {
     const teacher = await this.teachersRepository.findOne({
       where: { id: teacherId },
     });
+
     if (!teacher) {
       throw new BadRequestException('Teacher not found');
     }
@@ -96,10 +100,13 @@ export class TeacherService {
     const teacher = await this.teachersRepository.findOne({
       where: { id: teacherId },
     });
+
     if (!teacher) {
       throw new BadRequestException('Teacher not found');
     }
+
     await this.teachersRepository.delete({ id: teacherId });
+
     return { message: 'Teacher deleted successfully.' };
   }
 }

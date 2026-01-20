@@ -18,15 +18,18 @@ export class StudentService {
 
   async getAllStudents(query: GetStudentsQueryDTO): Promise<StudentsEntity[]> {
     const qb = this.studentsRepository.createQueryBuilder('student');
+
     if (query.search) {
       qb.where('student.name ILIKE :search', {
         search: `%${query.search}%`,
       });
     }
+
     qb.orderBy(
       `student.${query.sortBy || 'admissionNo'}`,
       query.sortOrder ?? 'ASC',
     );
+
     return qb.getMany();
   }
 
