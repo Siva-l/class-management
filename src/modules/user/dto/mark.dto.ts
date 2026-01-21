@@ -6,6 +6,8 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Max,
+  Min,
 } from 'class-validator';
 
 export class CreateMarkDTO {
@@ -23,6 +25,8 @@ export class CreateMarkDTO {
 
   @IsNumber()
   @IsNotEmpty()
+  @Min(0)
+  @Max(100)
   marksObtained: number;
 
   @IsBoolean()

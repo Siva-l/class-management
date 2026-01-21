@@ -1,9 +1,7 @@
 import {
-  AfterInsert,
-  AfterLoad,
-  AfterUpdate,
   BeforeInsert,
   BeforeUpdate,
+  Check,
   Column,
   Entity,
   JoinColumn,
@@ -16,6 +14,7 @@ import { SubjectsEntity } from './subjects.entity';
 import { ExamEntity } from './exams.entity';
 
 @Entity('marks')
+@Check(`"marks_obtained" >= 0 AND "marks_obtained" <= 100`)
 export class MarksEntity extends BaseEntity {
   @Column({ name: 'exam_id', type: 'uuid' })
   examId: string;
@@ -59,11 +58,29 @@ export class MarksEntity extends BaseEntity {
       return;
     }
 
-    if (this.marksObtained >= 90) this.grade = EnumGrade.S;
-    else if (this.marksObtained >= 80) this.grade = EnumGrade.A;
-    else if (this.marksObtained >= 70) this.grade = EnumGrade.B;
-    else if (this.marksObtained >= 60) this.grade = EnumGrade.C;
-    else if (this.marksObtained >= 50) this.grade = EnumGrade.D;
-    else this.grade = EnumGrade.F;
+    switch (true) {
+      case this.marksObtained >= 90:
+        this.grade = EnumGrade.S;
+        break;
+
+      case this.marksObtained >= 80:
+        this.grade = EnumGrade.A;
+        break;
+
+      case this.marksObtained >= 70:
+        this.grade = EnumGrade.B;
+        break;
+
+      case this.marksObtained >= 60:
+        this.grade = EnumGrade.C;
+        break;
+
+      case this.marksObtained >= 50:
+        this.grade = EnumGrade.D;
+        break;
+
+      default:
+        this.grade = EnumGrade.F;
+    }
   }
 }

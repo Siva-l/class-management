@@ -49,11 +49,11 @@ export class TeacherService {
   async createTeacher(payload: CreateTeacherDTO): Promise<{
     teacherInfo: Omit<TeachersEntity, 'encryptedPassword'>;
   }> {
-    const teacherExist = await this.teachersRepository.exists({
+    const existingTeacher = await this.teachersRepository.exists({
       where: { phone: payload.phone },
     });
 
-    if (teacherExist) {
+    if (existingTeacher) {
       throw new BadRequestException('Teacher already exists');
     }
 
@@ -81,6 +81,12 @@ export class TeacherService {
     if (!teacher) {
       throw new BadRequestException('Teacher not found');
     }
+
+    if (payload.password) {
+      teacher.encryptedPassword = await bcrypt.hash(payload.password, 12);
+    }
+
+    Object.assign(teacher, payload);
 
     const updatedTeacher = await this.teachersRepository.save({
       ...teacher,

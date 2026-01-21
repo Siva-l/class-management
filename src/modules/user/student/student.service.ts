@@ -34,21 +34,15 @@ export class StudentService {
   }
 
   async createStudent(payload: CreateStudentDTO): Promise<StudentsEntity> {
-    const userExists = await this.studentsRepository.exists({
+    const existingUser = await this.studentsRepository.exists({
       where: { admissionNo: payload.admissionNo },
     });
 
-    if (userExists) {
+    if (existingUser) {
       throw new BadRequestException('User already exists');
     }
 
-    const student = this.studentsRepository.save({
-      name: payload.name,
-      admissionNo: payload.admissionNo,
-      dob: payload.dob,
-      gender: payload.gender as EnumGender,
-      phone: payload.phone,
-    });
+    const student = this.studentsRepository.save(payload);
 
     return student;
   }

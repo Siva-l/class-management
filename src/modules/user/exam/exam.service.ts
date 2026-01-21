@@ -30,13 +30,13 @@ export class ExamService {
   }
 
   async createExam(payload: CreateExamDTO) {
-    const examExists = await this.examRepository.exists({
+    const existingExam = await this.examRepository.exists({
       where: {
         name: payload.name,
       },
     });
 
-    if (examExists) {
+    if (existingExam) {
       throw new BadRequestException('Exam already exists');
     }
 

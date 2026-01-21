@@ -29,17 +29,17 @@ export class DivisionService {
   }
 
   async createDivision(payload: CreateDivisionDTO) {
-    const divisionExist = await this.divisionRepository.exists({
+    const existingDivision = await this.divisionRepository.exists({
       where: { name: payload.name },
     });
 
-    if (divisionExist) {
+    if (existingDivision) {
       throw new BadRequestException('Division already exists');
     }
 
-    const divisionCreated = await this.divisionRepository.save({ ...payload });
+    const createdDivision = await this.divisionRepository.save(payload);
 
-    return divisionCreated;
+    return createdDivision;
   }
 
   async updateDivision(
@@ -54,12 +54,12 @@ export class DivisionService {
       throw new BadRequestException('Division not found');
     }
 
-    const divisionUpdated = await this.divisionRepository.save({
+    const updatedDivision = await this.divisionRepository.save({
       ...division,
       ...payload,
     });
 
-    return divisionUpdated;
+    return updatedDivision;
   }
 
   async deleteDivision(divisionId: string): Promise<{ message: string }> {

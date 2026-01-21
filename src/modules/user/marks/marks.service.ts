@@ -24,7 +24,7 @@ export class MarksService {
   }
 
   async createMark(payload: CreateMarkDTO) {
-    const markExists = await this.marksRepository.exists({
+    const existingMark = await this.marksRepository.exists({
       where: {
         examId: payload.examId,
         studentId: payload.studentId,
@@ -32,7 +32,7 @@ export class MarksService {
       },
     });
 
-    if (markExists) {
+    if (existingMark) {
       throw new BadRequestException('Mark already exists');
     }
 

@@ -30,20 +30,17 @@ export class SubjectService {
   }
 
   async createSubject(payload: CreateSubjectDTO): Promise<SubjectsEntity> {
-    const subjectExist = await this.subjectsRepository.exists({
+    const existingSubject = await this.subjectsRepository.exists({
       where: [{ name: payload.name }, { code: payload.code }],
     });
 
-    if (subjectExist) {
+    if (existingSubject) {
       throw new BadRequestException(
         `${payload.name} already exists with code ${payload.code}`,
       );
     }
 
-    const subject = await this.subjectsRepository.save({
-      name: payload.name,
-      code: payload.code,
-    });
+    const subject = await this.subjectsRepository.save(payload);
 
     return subject;
   }
@@ -60,9 +57,9 @@ export class SubjectService {
       throw new BadRequestException('Subject not found');
     }
 
-    const updateSubject = Object.assign(subject, payload);
+    const updatedSubject = Object.assign(subject, payload);
 
-    return await this.subjectsRepository.save(updateSubject);
+    return await this.subjectsRepository.save(updatedSubject);
   }
 
   async getSubjectById(subjectId: string): Promise<SubjectsEntity> {

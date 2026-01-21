@@ -29,22 +29,21 @@ export class StudentEnrollmentService {
   }
 
   async createStudentEnrollment(payload: CreateStudentEnrollmentDTO) {
-    const studentEnrollmentExists =
+    const existingStudentEnrollment =
       await this.studentEnrollmentsRepository.exists({
         where: { studentId: payload.studentId, divisionId: payload.divisionId },
       });
 
-    if (studentEnrollmentExists) {
+    if (existingStudentEnrollment) {
       throw new BadRequestException(
         'Student already enrolled in this division',
       );
     }
 
-    const studentEnrollment = this.studentEnrollmentsRepository.save({
-      ...payload,
-    });
+    const savedStudentEnrollment =
+      this.studentEnrollmentsRepository.save(payload);
 
-    return studentEnrollment;
+    return savedStudentEnrollment;
   }
 
   async updateStudentEnrollment(

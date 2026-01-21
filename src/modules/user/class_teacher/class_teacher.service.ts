@@ -35,11 +35,9 @@ export class ClassTeacherService {
       throw new BadRequestException('Class teacher already exists');
     }
 
-    const classTeacherCreated = await this.classTeacherRepository.save({
-      ...payload,
-    });
+    const createClassTeacher = await this.classTeacherRepository.save(payload);
 
-    return classTeacherCreated;
+    return createClassTeacher;
   }
 
   async updateClassTeacher(
@@ -54,12 +52,12 @@ export class ClassTeacherService {
       throw new BadRequestException('Class teacher not found');
     }
 
-    const classTeacherUpdated = await this.classTeacherRepository.save({
+    const updatedClassTeacher = await this.classTeacherRepository.save({
       ...classTeacher,
       ...payload,
     });
 
-    return classTeacherUpdated;
+    return updatedClassTeacher;
   }
 
   async deleteClassTeacher(classTeacherId: string) {

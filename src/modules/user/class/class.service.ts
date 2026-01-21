@@ -30,45 +30,45 @@ export class ClassService {
   }
 
   async createClass(payload: CreateClassDTO): Promise<ClassEntity> {
-    const classExist = await this.classRepository.exists({
+    const existingClass = await this.classRepository.exists({
       where: { grade: payload.grade },
     });
 
-    if (classExist) {
+    if (existingClass) {
       throw new BadRequestException('Class already exists');
     }
 
-    const classCreated = await this.classRepository.save({ ...payload });
+    const createClass = await this.classRepository.save(payload);
 
-    return classCreated;
+    return createClass;
   }
 
   async updateClass(
     classId: string,
     payload: UpdateClassDTO,
   ): Promise<ClassEntity> {
-    const classFind = await this.classRepository.findOne({
+    const existingClass = await this.classRepository.findOne({
       where: { id: classId },
     });
 
-    if (!classFind) {
+    if (!existingClass) {
       throw new BadRequestException('Class not found');
     }
 
-    const classUpdated = await this.classRepository.save({
-      ...classFind,
+    const updatedClass = await this.classRepository.save({
+      ...existingClass,
       ...payload,
     });
 
-    return classUpdated;
+    return updatedClass;
   }
 
   async deleteClass(classId: string): Promise<{ message: string }> {
-    const classFind = await this.classRepository.findOne({
+    const existingClass = await this.classRepository.findOne({
       where: { id: classId },
     });
 
-    if (!classFind) {
+    if (!existingClass) {
       throw new BadRequestException('Class not found');
     }
 
