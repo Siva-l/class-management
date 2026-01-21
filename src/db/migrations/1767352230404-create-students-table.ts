@@ -46,16 +46,15 @@ export class CreateStudentsTable1767352230404 implements MigrationInterface {
           {
             name: 'phone',
             type: 'varchar',
-            isUnique: true,
             isNullable: false,
           },
           {
-            name: 'createdAt',
+            name: 'created_at',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
           },
           {
-            name: 'updatedAt',
+            name: 'updated_at',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
           },

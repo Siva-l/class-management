@@ -3,7 +3,7 @@ import { BaseEntity } from './base.entity';
 import { DivisionsEntity } from './divisions.entity';
 import { TeachersEntity } from './teachers.entity';
 
-@Entity()
+@Entity('class_teachers')
 export class ClassTeachersEntity extends BaseEntity {
   @Column({ name: 'division_id', type: 'uuid' })
   divisionId: string;

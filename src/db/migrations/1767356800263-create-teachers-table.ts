@@ -25,18 +25,23 @@ export class CreateTeachersTable1767356800263 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: 'encrypted_password',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
             name: 'phone',
             type: 'varchar',
             isUnique: true,
             isNullable: false,
           },
           {
-            name: 'createdAt',
+            name: 'created_at',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
           },
           {
-            name: 'updatedAt',
+            name: 'updated_at',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
           },

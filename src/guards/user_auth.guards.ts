@@ -7,7 +7,7 @@ import {
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UsersService } from '../modules/user/users/users.service';
+import { TeacherService } from 'src/modules/user/teacher/teacher.service';
 
 @Injectable()
 export class UserAuthGuard implements CanActivate {
@@ -16,8 +16,8 @@ export class UserAuthGuard implements CanActivate {
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userService: UsersService,
     private readonly configService: ConfigService,
+    private readonly teacherService: TeacherService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -56,7 +56,9 @@ export class UserAuthGuard implements CanActivate {
       secret: this.configService.get('JWT_SECRET'),
     });
 
-    const user = await this.userService.getUserById(tokenPayload['userId']);
+    const user = await this.teacherService.getTeacherById(
+      tokenPayload['teacherId'],
+    );
 
     if (!user) {
       throw new UnauthorizedException('Invalid token');
