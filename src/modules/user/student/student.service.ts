@@ -17,8 +17,11 @@ export class StudentService {
   ) {}
 
   async getAllStudents(query: GetStudentsQueryDTO): Promise<StudentsEntity[]> {
-    const qb = this.studentsRepository.createQueryBuilder('student');
-
+    const qb = this.studentsRepository
+      .createQueryBuilder('student')
+      .leftJoinAndSelect('student.studentEnrollments', 'enrollment')
+      .leftJoinAndSelect('enrollment.division', 'division')
+      .leftJoinAndSelect('division.class', 'class');
     if (query.search) {
       qb.where('student.name ILIKE :search', {
         search: `%${query.search}%`,
@@ -48,9 +51,16 @@ export class StudentService {
   }
 
   async getStudentById(studentId: string): Promise<StudentsEntity> {
-    const student = await this.studentsRepository.findOne({
-      where: { id: studentId },
-    });
+    const qb = this.studentsRepository
+      .createQueryBuilder('student')
+      .leftJoinAndSelect('student.studentEnrollments', 'enrollment')
+      .leftJoinAndSelect('enrollment.division', 'division')
+      .leftJoinAndSelect('division.class', 'class')
+      .leftJoinAndSelect('student.marks', 'marks')
+      .leftJoinAndSelect('marks.exam', 'exam')
+      .where('student.id = :studentId', { studentId });
+
+    const student = await qb.getOne();
 
     if (!student) {
       throw new BadRequestException('Student not found');

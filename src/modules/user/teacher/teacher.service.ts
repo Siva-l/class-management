@@ -21,7 +21,28 @@ export class TeacherService {
   ) {}
 
   async getAllTeachers(query: GetTeachersQueryDTO): Promise<TeachersEntity[]> {
-    const qb = this.teachersRepository.createQueryBuilder('teacher');
+    const qb = this.teachersRepository
+      .createQueryBuilder('teacher')
+      .leftJoinAndSelect('teacher.classTeachers', 'classTeacher')
+      .leftJoinAndSelect('classTeacher.division', 'division')
+      .leftJoinAndSelect('classTeacher.subject', 'subject')
+      .leftJoinAndSelect('division.class', 'class');
+
+    qb.select([
+      'teacher.id',
+      'teacher.name',
+      'teacher.email',
+      'teacher.phone',
+      'classTeacher.id',
+      'division.id',
+      'division.name',
+      'class.id',
+      'class.grade',
+      'class.description',
+      'subject.id',
+      'subject.name',
+      'subject.code',
+    ]);
 
     if (query.search) {
       qb.where('teacher.name ILIKE :search OR teacher.email ILIKE :search', {
