@@ -10,6 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { paginate, PaginationResult } from 'src/types/utils/paginate.utils';
 
 @Injectable()
 export class TeacherService {
@@ -20,7 +21,9 @@ export class TeacherService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async getAllTeachers(query: GetTeachersQueryDTO): Promise<TeachersEntity[]> {
+  async getAllTeachers(
+    query: GetTeachersQueryDTO,
+  ): Promise<PaginationResult<TeachersEntity>> {
     const qb = this.teachersRepository
       .createQueryBuilder('teacher')
       .leftJoinAndSelect('teacher.classTeachers', 'classTeacher')
@@ -28,21 +31,7 @@ export class TeacherService {
       .leftJoinAndSelect('classTeacher.subject', 'subject')
       .leftJoinAndSelect('division.class', 'class');
 
-    qb.select([
-      'teacher.id',
-      'teacher.name',
-      'teacher.email',
-      'teacher.phone',
-      'classTeacher.id',
-      'division.id',
-      'division.name',
-      'class.id',
-      'class.grade',
-      'class.description',
-      'subject.id',
-      'subject.name',
-      'subject.code',
-    ]);
+    qb.select(['teacher.id', 'teacher.name', 'teacher.email', 'teacher.phone']);
 
     if (query.search) {
       qb.where('teacher.name ILIKE :search OR teacher.email ILIKE :search', {
@@ -52,7 +41,7 @@ export class TeacherService {
 
     qb.orderBy(`teacher.${query.sortBy || 'name'}`, query.sortOrder || 'ASC');
 
-    return qb.getMany();
+    return paginate(qb, query);
   }
 
   async getTeacherById(teacherId: string): Promise<TeachersEntity> {

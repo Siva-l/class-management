@@ -7,6 +7,7 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
+import { PaginationDTO } from './pagination.dto';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{7,}$/;
 const passwordMessage =
@@ -33,7 +34,7 @@ export class CreateTeacherDTO {
 
 export class UpdateTeacherDTO extends PartialType(CreateTeacherDTO) {}
 
-export class GetTeachersQueryDTO {
+export class GetTeachersQueryDTO extends PaginationDTO {
   @IsOptional()
   @IsIn(['name'])
   sortBy?: 'name';

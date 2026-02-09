@@ -12,11 +12,15 @@ import {
 } from '@nestjs/common';
 import { TeacherService } from './teacher.service';
 import { ResponseTransformInterceptor } from 'src/injectors/response.injectors';
-import { CreateTeacherDTO, GetTeachersQueryDTO } from '../dto/teacher.dto';
+import {
+  CreateTeacherDTO,
+  GetTeachersQueryDTO,
+  UpdateTeacherDTO,
+} from '../dto/teacher.dto';
 import { UserAuthGuard } from 'src/guards/user_auth.guards';
 
 @Controller('teachers')
-@UseGuards(UserAuthGuard)
+// @UseGuards(UserAuthGuard)
 @UseInterceptors(ResponseTransformInterceptor)
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
@@ -39,7 +43,7 @@ export class TeacherController {
   @Put(':teacherId')
   async updateTeacher(
     @Param('teacherId') teacherId: string,
-    @Body() payload: CreateTeacherDTO,
+    @Body() payload: UpdateTeacherDTO,
   ) {
     return this.teacherService.updateTeacher(teacherId, payload);
   }

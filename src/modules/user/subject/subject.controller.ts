@@ -20,7 +20,7 @@ import { UserAuthGuard } from 'src/guards/user_auth.guards';
 import { ResponseTransformInterceptor } from 'src/injectors/response.injectors';
 
 @Controller('subjects')
-@UseGuards(UserAuthGuard)
+// @UseGuards(UserAuthGuard)
 @UseInterceptors(ResponseTransformInterceptor)
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}

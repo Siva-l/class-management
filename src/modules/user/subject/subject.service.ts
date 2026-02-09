@@ -7,6 +7,7 @@ import {
   GetSubjectsQueryDTO,
   UpdateSubjectDTO,
 } from '../dto/subject.dto';
+import { paginate, PaginationResult } from 'src/types/utils/paginate.utils';
 
 @Injectable()
 export class SubjectService {
@@ -15,7 +16,9 @@ export class SubjectService {
     private readonly subjectsRepository: Repository<SubjectsEntity>,
   ) {}
 
-  async getAllSubjects(query: GetSubjectsQueryDTO): Promise<SubjectsEntity[]> {
+  async getAllSubjects(
+    query: GetSubjectsQueryDTO,
+  ): Promise<PaginationResult<SubjectsEntity>> {
     const qb = this.subjectsRepository.createQueryBuilder('subject');
 
     if (query.search) {
@@ -26,7 +29,7 @@ export class SubjectService {
 
     qb.orderBy(`subject.${query.sortBy || 'name'}`, query.sortOrder || 'ASC');
 
-    return qb.getMany();
+    return paginate(qb, query);
   }
 
   async createSubject(payload: CreateSubjectDTO): Promise<SubjectsEntity> {

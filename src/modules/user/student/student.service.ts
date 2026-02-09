@@ -7,7 +7,7 @@ import {
 import { StudentsEntity } from 'src/db/entities/students.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { EnumGender } from 'src/types/enum/app_enum';
+import { paginate, PaginationResult } from 'src/types/utils/paginate.utils';
 
 @Injectable()
 export class StudentService {
@@ -16,12 +16,24 @@ export class StudentService {
     private readonly studentsRepository: Repository<StudentsEntity>,
   ) {}
 
-  async getAllStudents(query: GetStudentsQueryDTO): Promise<StudentsEntity[]> {
+  async getAllStudents(
+    query: GetStudentsQueryDTO,
+  ): Promise<PaginationResult<StudentsEntity>> {
     const qb = this.studentsRepository
       .createQueryBuilder('student')
       .leftJoinAndSelect('student.studentEnrollments', 'enrollment')
       .leftJoinAndSelect('enrollment.division', 'division')
-      .leftJoinAndSelect('division.class', 'class');
+      .leftJoinAndSelect('division.class', 'class')
+      .select([
+        'student.id',
+        'student.name',
+        'student.admissionNo',
+        'student.dob',
+        'student.gender',
+        'student.phone',
+        'student.createdAt',
+        'student.updatedAt',
+      ]);
     if (query.search) {
       qb.where('student.name ILIKE :search', {
         search: `%${query.search}%`,
@@ -33,7 +45,7 @@ export class StudentService {
       query.sortOrder ?? 'ASC',
     );
 
-    return qb.getMany();
+    return paginate(qb, query);
   }
 
   async createStudent(payload: CreateStudentDTO): Promise<StudentsEntity> {
