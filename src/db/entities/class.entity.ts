@@ -1,4 +1,4 @@
-import { AfterLoad, Column, Entity, OneToMany, VirtualColumn } from 'typeorm';
+import { Column, Entity, OneToMany, VirtualColumn } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { DivisionsEntity } from './divisions.entity';
 
