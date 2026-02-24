@@ -70,7 +70,17 @@ export class StudentService {
       .leftJoinAndSelect('division.class', 'class')
       .leftJoinAndSelect('student.marks', 'marks')
       .leftJoinAndSelect('marks.exam', 'exam')
-      .where('student.id = :studentId', { studentId });
+      .where('student.id = :studentId', { studentId })
+      .select([
+        'student.id',
+        'student.name',
+        'student.admissionNo',
+        'student.dob',
+        'student.gender',
+        'student.phone',
+        'student.createdAt',
+        'student.updatedAt',
+      ]);
 
     const student = await qb.getOne();
 

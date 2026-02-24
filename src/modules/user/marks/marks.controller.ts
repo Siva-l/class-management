@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { MarksService } from './marks.service';
 import {
+  AverageMarksDTO,
   CreateMarkDTO,
   GetMarksQueryDTO,
   UpdateMarkDTO,
@@ -19,7 +20,7 @@ import { UserAuthGuard } from 'src/guards/user_auth.guards';
 import { ResponseTransformInterceptor } from 'src/injectors/response.injectors';
 
 @Controller('marks')
-@UseGuards(UserAuthGuard)
+// @UseGuards(UserAuthGuard)
 @UseInterceptors(ResponseTransformInterceptor)
 export class MarksController {
   constructor(private readonly marksService: MarksService) {}
@@ -27,6 +28,16 @@ export class MarksController {
   @Get()
   async getAllMarks(query: GetMarksQueryDTO) {
     return this.marksService.getAllMarks(query);
+  }
+
+  @Get('/gender')
+  async listGenderByGrade() {
+    return this.marksService.listGenderByGrade();
+  }
+
+  @Put('/average-marks')
+  async calculateAverageMarks(@Body() payload: AverageMarksDTO) {
+    return this.marksService.calculateAverageMarks(payload);
   }
 
   @Post('/create')
