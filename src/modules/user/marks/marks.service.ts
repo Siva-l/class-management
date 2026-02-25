@@ -49,9 +49,9 @@ export class MarksService {
   async calculateAverageMarks(payload: AverageMarksDTO) {
     const qb = await this.classRepository
       .createQueryBuilder('class')
-      .innerJoin('class.divisions', 'division')
-      .innerJoin('division.studentEnrollments', 'enrollment')
-      .innerJoin('enrollment.student', 'student')
+      .leftJoin('class.divisions', 'division')
+      .leftJoin('division.studentEnrollments', 'enrollment')
+      .leftJoin('enrollment.student', 'student')
       .innerJoin('student.marks', 'mark')
       .innerJoin('mark.subject', 'subject')
       .where('class.grade = :grade', { grade: Number(payload.grade) })

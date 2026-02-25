@@ -21,9 +21,6 @@ export class StudentService {
   ): Promise<PaginationResult<StudentsEntity>> {
     const qb = this.studentsRepository
       .createQueryBuilder('student')
-      .leftJoinAndSelect('student.studentEnrollments', 'enrollment')
-      .leftJoinAndSelect('enrollment.division', 'division')
-      .leftJoinAndSelect('division.class', 'class')
       .select([
         'student.id',
         'student.name',
@@ -65,11 +62,6 @@ export class StudentService {
   async getStudentById(studentId: string): Promise<StudentsEntity> {
     const qb = this.studentsRepository
       .createQueryBuilder('student')
-      .leftJoinAndSelect('student.studentEnrollments', 'enrollment')
-      .leftJoinAndSelect('enrollment.division', 'division')
-      .leftJoinAndSelect('division.class', 'class')
-      .leftJoinAndSelect('student.marks', 'marks')
-      .leftJoinAndSelect('marks.exam', 'exam')
       .where('student.id = :studentId', { studentId })
       .select([
         'student.id',
