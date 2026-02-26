@@ -2,7 +2,6 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { ClassEntity } from './class.entity';
 import { ClassTeachersEntity } from './class_teachers.entity';
-import { StudentsEntity } from './students.entity';
 import { StudentEnrollmentsEntity } from './student_enrollments.entity';
 
 @Entity('divisions')

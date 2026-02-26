@@ -41,6 +41,7 @@ export class MarksService {
         'FEMALE',
       )
       .groupBy('class.grade')
+      .orderBy('class.grade', 'ASC')
       .getRawMany();
 
     return qb;

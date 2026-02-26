@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { MarksEntity } from './marks.entity';
 import { TeachersEntity } from './teachers.entity';
@@ -15,9 +15,9 @@ export class SubjectsEntity extends BaseEntity {
   @OneToMany(() => MarksEntity, (marks) => marks.subject)
   marks: MarksEntity[];
 
-  @ManyToMany(() => TeachersEntity, (teacher) => teacher.subjects)
+  @OneToMany(() => TeachersEntity, (teacher) => teacher.subjects)
   teachers: TeachersEntity[];
 
-  @ManyToMany(() => ClassTeachersEntity, (classTeacher) => classTeacher.subject)
+  @OneToMany(() => ClassTeachersEntity, (classTeacher) => classTeacher.subject)
   classTeachers: ClassTeachersEntity[];
 }
