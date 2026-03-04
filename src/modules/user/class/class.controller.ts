@@ -13,6 +13,7 @@ import {
 import { ClassService } from './class.service';
 import {
   CreateClassDTO,
+  CreateClassWithSubjectsDTO,
   GetClassesQueryDTO,
   UpdateClassDTO,
 } from '../dto/class.dto';
@@ -33,6 +34,11 @@ export class ClassController {
   @Post('/create')
   async createClass(@Body() payload: CreateClassDTO) {
     return this.classService.createClass(payload);
+  }
+
+  @Post('/class-with-subjects')
+  async createClassWithSubjects(@Body() payload: CreateClassWithSubjectsDTO) {
+    return this.classService.createClassWithSubjects(payload);
   }
 
   @Put(':classId')
