@@ -21,6 +21,9 @@ export class StudentsEntity extends BaseEntity {
   @Column({ name: 'phone', type: 'varchar' })
   phone: string;
 
+  @Column({ name: 'image_url', type: 'varchar', nullable: true })
+  imageUrl: string;
+
   @OneToMany(() => MarksEntity, (marks) => marks.student)
   marks: MarksEntity[];
 

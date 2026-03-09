@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { FileService } from 'src/services/file.service';
 import {
   CreateStudentDTO,
   GetStudentsQueryDTO,
@@ -14,6 +15,7 @@ export class StudentService {
   constructor(
     @InjectRepository(StudentsEntity)
     private readonly studentsRepository: Repository<StudentsEntity>,
+    private readonly fileService: FileService,
   ) {}
 
   async getAllStudents(
@@ -115,5 +117,23 @@ export class StudentService {
     await this.studentsRepository.delete({ id: studentId });
 
     return { message: 'Student deleted successfully.' };
+  }
+
+  async uploadStudentProfileImage(
+    studentId: string,
+    file: Express.Multer.File,
+  ): Promise<StudentsEntity> {
+    const student = await this.studentsRepository.findOne({
+      where: { id: studentId },
+    });
+
+    if (!student) {
+      throw new BadRequestException('Student not found');
+    }
+
+    const uploadResult = await this.fileService.uploadProfileImage(file);
+    student.imageUrl = uploadResult.devicePath;
+
+    return await this.studentsRepository.save(student);
   }
 }

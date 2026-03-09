@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { Post } from '@nestjs/common';
-import { Body } from '@nestjs/common';
+import { Body, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   CreateStudentDTO,
   GetStudentsQueryDTO,
@@ -51,5 +52,14 @@ export class StudentController {
   @Delete(':studentId')
   async deleteStudent(@Param('studentId') studentId: string) {
     return this.studentService.deleteStudent(studentId);
+  }
+
+  @Post('upload-image/:studentId')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadStudentProfileImage(
+    @Param('studentId') studentId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.studentService.uploadStudentProfileImage(studentId, file);
   }
 }
