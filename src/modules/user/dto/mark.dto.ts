@@ -48,3 +48,13 @@ export class GetMarksQueryDTO {
   @IsIn(['ASC', 'DESC'])
   sortOrder?: 'ASC' | 'DESC';
 }
+
+export class AverageMarksDTO {
+  @IsString()
+  @IsNotEmpty()
+  division: string;
+
+  @IsString()
+  @IsNotEmpty()
+  grade: string;
+}

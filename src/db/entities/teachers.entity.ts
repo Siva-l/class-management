@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { ClassTeachersEntity } from './class_teachers.entity';
+import { SubjectsEntity } from './subjects.entity';
 
 @Entity('teachers')
 export class TeachersEntity extends BaseEntity {
@@ -18,4 +19,7 @@ export class TeachersEntity extends BaseEntity {
 
   @OneToMany(() => ClassTeachersEntity, (classTeacher) => classTeacher.teacher)
   classTeachers: ClassTeachersEntity[];
+
+  @OneToMany(() => SubjectsEntity, (subject) => subject.teachers)
+  subjects: SubjectsEntity[];
 }

@@ -10,6 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { paginate, PaginationResult } from 'src/types/utils/paginate.utils';
 
 @Injectable()
 export class TeacherService {
@@ -20,8 +21,17 @@ export class TeacherService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async getAllTeachers(query: GetTeachersQueryDTO): Promise<TeachersEntity[]> {
-    const qb = this.teachersRepository.createQueryBuilder('teacher');
+  async getAllTeachers(
+    query: GetTeachersQueryDTO,
+  ): Promise<PaginationResult<TeachersEntity>> {
+    const qb = this.teachersRepository
+      .createQueryBuilder('teacher')
+      .leftJoinAndSelect('teacher.classTeachers', 'classTeacher')
+      .leftJoinAndSelect('classTeacher.division', 'division')
+      .leftJoinAndSelect('classTeacher.subject', 'subject')
+      .leftJoinAndSelect('division.class', 'class');
+
+    qb.select(['teacher.id', 'teacher.name', 'teacher.email', 'teacher.phone']);
 
     if (query.search) {
       qb.where('teacher.name ILIKE :search OR teacher.email ILIKE :search', {
@@ -31,7 +41,7 @@ export class TeacherService {
 
     qb.orderBy(`teacher.${query.sortBy || 'name'}`, query.sortOrder || 'ASC');
 
-    return qb.getMany();
+    return paginate(qb, query);
   }
 
   async getTeacherById(teacherId: string): Promise<TeachersEntity> {

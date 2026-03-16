@@ -1,5 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { PaginationDTO } from './pagination.dto';
 
 export class CreateSubjectDTO {
   @IsString()
@@ -13,7 +14,7 @@ export class CreateSubjectDTO {
 
 export class UpdateSubjectDTO extends PartialType(CreateSubjectDTO) {}
 
-export class GetSubjectsQueryDTO {
+export class GetSubjectsQueryDTO extends PaginationDTO {
   @IsOptional()
   @IsIn(['name', 'code'])
   sortBy?: 'name' | 'code';

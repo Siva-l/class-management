@@ -7,7 +7,7 @@ import {
 import { StudentsEntity } from 'src/db/entities/students.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { EnumGender } from 'src/types/enum/app_enum';
+import { paginate, PaginationResult } from 'src/types/utils/paginate.utils';
 
 @Injectable()
 export class StudentService {
@@ -16,9 +16,21 @@ export class StudentService {
     private readonly studentsRepository: Repository<StudentsEntity>,
   ) {}
 
-  async getAllStudents(query: GetStudentsQueryDTO): Promise<StudentsEntity[]> {
-    const qb = this.studentsRepository.createQueryBuilder('student');
-
+  async getAllStudents(
+    query: GetStudentsQueryDTO,
+  ): Promise<PaginationResult<StudentsEntity>> {
+    const qb = this.studentsRepository
+      .createQueryBuilder('student')
+      .select([
+        'student.id',
+        'student.name',
+        'student.admissionNo',
+        'student.dob',
+        'student.gender',
+        'student.phone',
+        'student.createdAt',
+        'student.updatedAt',
+      ]);
     if (query.search) {
       qb.where('student.name ILIKE :search', {
         search: `%${query.search}%`,
@@ -30,7 +42,7 @@ export class StudentService {
       query.sortOrder ?? 'ASC',
     );
 
-    return qb.getMany();
+    return paginate(qb, query);
   }
 
   async createStudent(payload: CreateStudentDTO): Promise<StudentsEntity> {
@@ -48,9 +60,21 @@ export class StudentService {
   }
 
   async getStudentById(studentId: string): Promise<StudentsEntity> {
-    const student = await this.studentsRepository.findOne({
-      where: { id: studentId },
-    });
+    const qb = this.studentsRepository
+      .createQueryBuilder('student')
+      .where('student.id = :studentId', { studentId })
+      .select([
+        'student.id',
+        'student.name',
+        'student.admissionNo',
+        'student.dob',
+        'student.gender',
+        'student.phone',
+        'student.createdAt',
+        'student.updatedAt',
+      ]);
+
+    const student = await qb.getOne();
 
     if (!student) {
       throw new BadRequestException('Student not found');

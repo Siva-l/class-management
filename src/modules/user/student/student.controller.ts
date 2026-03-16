@@ -20,7 +20,7 @@ import { ResponseTransformInterceptor } from 'src/injectors/response.injectors';
 import { UserAuthGuard } from 'src/guards/user_auth.guards';
 
 @Controller('students')
-@UseGuards(UserAuthGuard)
+// @UseGuards(UserAuthGuard)
 @UseInterceptors(ResponseTransformInterceptor)
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}

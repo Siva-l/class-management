@@ -7,6 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
+import { PaginationDTO } from './pagination.dto';
 
 export class CreateStudentDTO {
   @IsString()
@@ -33,7 +34,7 @@ export class CreateStudentDTO {
 
 export class UpdateStudentDTO extends PartialType(CreateStudentDTO) {}
 
-export class GetStudentsQueryDTO {
+export class GetStudentsQueryDTO extends PaginationDTO {
   @IsOptional()
   @IsString()
   search?: string;
