@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { FileService } from 'src/services/file.service';
 import {
   CreateStudentDTO,
   GetStudentsQueryDTO,
@@ -14,6 +15,7 @@ export class StudentService {
   constructor(
     @InjectRepository(StudentsEntity)
     private readonly studentsRepository: Repository<StudentsEntity>,
+    private readonly fileService: FileService,
   ) {}
 
   async getAllStudents(
@@ -30,6 +32,7 @@ export class StudentService {
         'student.phone',
         'student.createdAt',
         'student.updatedAt',
+        'student.imageUrl',
       ]);
     if (query.search) {
       qb.where('student.name ILIKE :search', {
@@ -45,7 +48,11 @@ export class StudentService {
     return paginate(qb, query);
   }
 
-  async createStudent(payload: CreateStudentDTO): Promise<StudentsEntity> {
+  async createStudent(
+    payload: CreateStudentDTO,
+    file: Express.Multer.File,
+  ): Promise<StudentsEntity> {
+    const uploadResult = await this.fileService.uploadProfileImage(file);
     const existingUser = await this.studentsRepository.exists({
       where: { admissionNo: payload.admissionNo },
     });
@@ -54,7 +61,10 @@ export class StudentService {
       throw new BadRequestException('User already exists');
     }
 
-    const student = this.studentsRepository.save(payload);
+    const student = await this.studentsRepository.save({
+      ...payload,
+      imageUrl: uploadResult.devicePath,
+    });
 
     return student;
   }
@@ -72,6 +82,7 @@ export class StudentService {
         'student.phone',
         'student.createdAt',
         'student.updatedAt',
+        'student.imageUrl',
       ]);
 
     const student = await qb.getOne();
@@ -86,7 +97,9 @@ export class StudentService {
   async updateStudent(
     studentId: string,
     payload: UpdateStudentDTO,
+    file: Express.Multer.File,
   ): Promise<StudentsEntity> {
+    const uploadResult = await this.fileService.uploadProfileImage(file);
     const student = await this.studentsRepository.findOne({
       where: { id: studentId },
     });
@@ -98,6 +111,7 @@ export class StudentService {
     const updatedStudent = await this.studentsRepository.save({
       ...student,
       ...payload,
+      imageUrl: uploadResult.devicePath,
     });
 
     return updatedStudent;
@@ -115,5 +129,23 @@ export class StudentService {
     await this.studentsRepository.delete({ id: studentId });
 
     return { message: 'Student deleted successfully.' };
+  }
+
+  async uploadStudentProfileImage(
+    studentId: string,
+    file: Express.Multer.File,
+  ): Promise<StudentsEntity> {
+    const student = await this.studentsRepository.findOne({
+      where: { id: studentId },
+    });
+
+    if (!student) {
+      throw new BadRequestException('Student not found');
+    }
+
+    const uploadResult = await this.fileService.uploadProfileImage(file);
+    student.imageUrl = uploadResult.devicePath;
+
+    return await this.studentsRepository.save(student);
   }
 }

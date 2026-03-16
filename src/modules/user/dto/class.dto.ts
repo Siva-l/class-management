@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { IntersectionType, PartialType } from '@nestjs/mapped-types';
 import {
   IsIn,
   IsNotEmpty,
@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { CreateSubjectDTO } from './subject.dto';
 
 export class CreateClassDTO {
   @IsNumber()
@@ -16,6 +17,11 @@ export class CreateClassDTO {
   @IsString()
   description?: string;
 }
+
+export class CreateClassWithSubjectsDTO extends IntersectionType(
+  CreateClassDTO,
+  CreateSubjectDTO,
+) {}
 
 export class UpdateClassDTO extends PartialType(CreateClassDTO) {}
 

@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { Post } from '@nestjs/common';
-import { Body } from '@nestjs/common';
+import { Body, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   CreateStudentDTO,
   GetStudentsQueryDTO,
@@ -31,8 +32,12 @@ export class StudentController {
   }
 
   @Post('/create')
-  async createStudent(@Body() payload: CreateStudentDTO) {
-    return this.studentService.createStudent(payload);
+  @UseInterceptors(FileInterceptor('file'))
+  async createStudent(
+    @Body() payload: CreateStudentDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.studentService.createStudent(payload, file);
   }
 
   @Get(':studentId')
@@ -41,15 +46,26 @@ export class StudentController {
   }
 
   @Put(':studentId')
+  @UseInterceptors(FileInterceptor('file'))
   async updateStudent(
     @Param('studentId') studentId: string,
     @Body() payload: UpdateStudentDTO,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.studentService.updateStudent(studentId, payload);
+    return this.studentService.updateStudent(studentId, payload, file);
   }
 
   @Delete(':studentId')
   async deleteStudent(@Param('studentId') studentId: string) {
     return this.studentService.deleteStudent(studentId);
+  }
+
+  @Post('upload-image/:studentId')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadStudentProfileImage(
+    @Param('studentId') studentId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.studentService.uploadStudentProfileImage(studentId, file);
   }
 }
