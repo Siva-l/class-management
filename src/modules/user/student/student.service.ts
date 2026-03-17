@@ -97,9 +97,8 @@ export class StudentService {
   async updateStudent(
     studentId: string,
     payload: UpdateStudentDTO,
-    file: Express.Multer.File,
+    file?: Express.Multer.File,
   ): Promise<StudentsEntity> {
-    const uploadResult = await this.fileService.uploadProfileImage(file);
     const student = await this.studentsRepository.findOne({
       where: { id: studentId },
     });
@@ -108,10 +107,17 @@ export class StudentService {
       throw new BadRequestException('Student not found');
     }
 
+    let imageUrl = student.imageUrl;
+
+    if (file) {
+      const uploadResult = await this.fileService.uploadProfileImage(file);
+      imageUrl = uploadResult.devicePath;
+    }
+
     const updatedStudent = await this.studentsRepository.save({
       ...student,
       ...payload,
-      imageUrl: uploadResult.devicePath,
+      imageUrl,
     });
 
     return updatedStudent;
