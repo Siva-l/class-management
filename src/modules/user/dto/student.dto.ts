@@ -40,8 +40,12 @@ export class GetStudentsQueryDTO extends PaginationDTO {
   search?: string;
 
   @IsOptional()
-  @IsIn(['name', 'admissionNumber', 'gender'])
-  sortBy?: 'name' | 'admissionNumber' | 'gender';
+  @IsEnum(EnumGender)
+  gender?: EnumGender;
+
+  @IsOptional()
+  @IsIn(['name', 'admissionNo', 'gender'])
+  sortBy?: 'name' | 'admissionNo' | 'gender';
 
   @IsOptional()
   @IsIn(['ASC', 'DESC'])

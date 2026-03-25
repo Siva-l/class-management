@@ -40,6 +40,10 @@ export class StudentService {
       });
     }
 
+    if (query.gender) {
+      qb.andWhere('student.gender = :gender', { gender: query.gender });
+    }
+
     qb.orderBy(
       `student.${query.sortBy || 'admissionNo'}`,
       query.sortOrder ?? 'ASC',
@@ -50,9 +54,12 @@ export class StudentService {
 
   async createStudent(
     payload: CreateStudentDTO,
-    file: Express.Multer.File,
+    file?: Express.Multer.File,
   ): Promise<StudentsEntity> {
-    const uploadResult = await this.fileService.uploadProfileImage(file);
+    const uploadResult = file
+      ? await this.fileService.uploadProfileImage(file)
+      : null;
+
     const existingUser = await this.studentsRepository.exists({
       where: { admissionNo: payload.admissionNo },
     });
@@ -63,7 +70,7 @@ export class StudentService {
 
     const student = await this.studentsRepository.save({
       ...payload,
-      imageUrl: uploadResult.devicePath,
+      imageUrl: uploadResult?.devicePath,
     });
 
     return student;
