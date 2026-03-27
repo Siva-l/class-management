@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const configService = app.get(ConfigService);
 
   // Serve the uploads directory statically
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
@@ -27,8 +29,9 @@ async function bootstrap() {
     origin: 'http://localhost:5173',
     credentials: true,
   });
-  await app.listen(process.env.PORT ?? 3000);
-  console.log(`Application is running on port ${process.env.PORT}`);
+  const port = configService.get<number>('PORT') || 3000;
+  await app.listen(port);
+  console.log(`Application is running on port ${port}`);
 }
 bootstrap().catch((err) => {
   if (err) {

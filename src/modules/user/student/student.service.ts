@@ -139,7 +139,7 @@ export class StudentService {
       throw new BadRequestException('Student not found');
     }
 
-    await this.studentsRepository.delete({ id: studentId });
+    await this.studentsRepository.softDelete({ id: studentId });
 
     return { message: 'Student deleted successfully.' };
   }

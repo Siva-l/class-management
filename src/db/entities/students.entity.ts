@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { EnumGender } from '../../types/enum/app_enum';
 import { MarksEntity } from './marks.entity';
@@ -23,6 +23,9 @@ export class StudentsEntity extends BaseEntity {
 
   @Column({ name: 'image_url', type: 'varchar', nullable: true })
   imageUrl: string;
+
+  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
+  deletedAt?: Date;
 
   @OneToMany(() => MarksEntity, (marks) => marks.student)
   marks: MarksEntity[];
