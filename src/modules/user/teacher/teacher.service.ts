@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { paginate, PaginationResult } from 'src/types/utils/paginate.utils';
+import { EmailService } from 'src/services/email.service';
 
 @Injectable()
 export class TeacherService {
@@ -19,6 +20,7 @@ export class TeacherService {
     private readonly teachersRepository: Repository<TeachersEntity>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
 
   async getAllTeachers(
@@ -76,6 +78,11 @@ export class TeacherService {
     });
 
     const { encryptedPassword: _, password: __, ...teacherInfo } = teacher;
+
+    await this.emailService.sendTeacherWelcomeEmail(
+      'delivered@resend.dev',
+      teacher.name,
+    );
 
     return { teacherInfo };
   }
