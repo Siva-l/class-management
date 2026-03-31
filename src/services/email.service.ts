@@ -23,7 +23,7 @@ export class EmailService {
   async sendTeacherWelcomeEmail(to: string, name: string) {
     const { data, error } = await this.resend.emails.send({
       from: this.from,
-      to: ['sivalakshmanan31@yopmail.com'],
+      to: ['sivalakshmanan31@gmail.com'],
       subject: 'Welcome to School 🎓',
       html: `
         <h1>Welcome ${name}!</h1>
